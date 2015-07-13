@@ -61,8 +61,13 @@ for i in range(0,test_size):
 
 from sklearn.naive_bayes import GaussianNB
 clf =  GaussianNB()
+t0=time()
 clf.fit(features_train,labels_train)
+print("training time:",round(time()-t0,3),"s")
+
+t0=time()
 result=clf.score(features_test,labels_test)
+print("training time:",round(time()-t0,3),"s")
 print(result)
 	
 
