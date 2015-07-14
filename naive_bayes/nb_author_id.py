@@ -67,7 +67,7 @@ print("training time:",round(time()-t0,3),"s")
 
 t0=time()
 result=clf.score(features_test,labels_test)
-print("training time:",round(time()-t0,3),"s")
+print("predict time:",round(time()-t0,3),"s")
 print(result)
 	
 
