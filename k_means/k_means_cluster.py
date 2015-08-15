@@ -47,20 +47,39 @@ data_dict.pop("TOTAL", 0)
 
 ### the input features we want to use 
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
+#salary
+#deferral_payments
+#total_payments
+#exercised_stock_options
+'''
+'salary', 'deferral_payments', 'total_payments',
+'exercised_stock_options',
+'bonus',
+'restricted_stock',
+'restricted_stock_deferred',
+'total_stock_value',
+'expenses', 
+ 'director_fees',
+ 'deferred_income',
+ 'long_term_incentive',
+]
+
+'''
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
+feature_3="total_payments"
 poi  = "poi"
-features_list = [poi, feature_1, feature_2]
+features_list = [poi, feature_1, feature_2,feature_3]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
-
+print(poi)
 
 ### in the "clustering with 3 features" part of the mini-project,
 ### you'll want to change this line to 
 ### for f1, f2, _ in finance_features:
 ### (as it's currently written, line below assumes 2 features)
-for f1, f2 in finance_features:
-    plt.scatter( f1, f2 )
+for f1, f2 ,f3 in finance_features:
+    plt.scatter( f1, f2 ,f3)
 plt.show()
 
 
@@ -71,11 +90,56 @@ data2 = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data2 )
 clf = KMeans(n_clusters=2)
 pred = clf.fit_predict( finance_features )
-Draw(pred, finance_features, poi, name="clusters_before_scaling.pdf", f1_name=feature_1, f2_name=feature_2)
+Draw(pred, finance_features, poi, mark_poi=True,name="clusters_before_scaling.pdf", f1_name=feature_1, f2_name=feature_2)
 
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
+'''
+features_list = ["poi", feature_1, feature_2,feature_3]
+data2 = featureFormat(data_dict, features_list )
+poi, finance_features = targetFeatureSplit( data2 )
+clf = KMeans(n_clusters=2)
+pred = clf.fit_predict( finance_features )
+Draw(pred, finance_features, poi, mark_poi=True,name="clusters_before_scaling.pdf", f1_name=feature_1, f2_name=feature_2)
+'''
+def find_min_max(key,data_dict):
+    names=data_dict.keys()
+    for i in range(0,len(names)):
+        temp=data_dict[names[i]][key]
+        if(temp!='NaN'):
+            salary_min=data_dict[names[i]][key]
+            salary_max=salary_min
+            break
+    for i in range(0,len(names)):
+        temp=data_dict[names[i]][key]
+        if(temp=='NaN'):
+            continue
+        if(temp>salary_max):
+            salary_max=temp
+        if(temp<salary_min):
+            salary_min=temp
+    return (salary_min,salary_max)
+salary_min,salary_max=find_min_max("salary",data_dict)
+eso_min,eso_max=find_min_max("exercised_stock_options",data_dict)
+
+def my_scaler(value,min,max):
+    return(value-min+0.0)/(max-min)
+print(200000,my_scaler(200000.0,salary_min,salary_max))
+print((200000.0-salary_min+0.0)/(salary_max-salary_min))
+print(1000000,my_scaler(1000000.0,eso_min,eso_max))
+print((1000000.0-eso_min+0.0)/(eso_max-eso_min))
+print("salary_min",salary_min)
+print("salary_max",salary_max)
+print("eso_min",eso_min)
+print("eso_max",eso_max)
+from sklearn.preprocessing import MinMaxScaler
+scaler=MinMaxScaler()
+
+
+
+
+
 
 try:
     Draw(pred, finance_features, poi, mark_poi=False, name="clusters.pdf", f1_name=feature_1, f2_name=feature_2)
