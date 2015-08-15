@@ -18,5 +18,5 @@
 import pickle
 
 enron_data = pickle.load(open("../final_project/final_project_dataset.pkl", "r"))
-
-
+names=enron_data.keys()
+feature_names=[enron_data[names[0]]].keys()
