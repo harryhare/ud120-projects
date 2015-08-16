@@ -56,6 +56,8 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
             temp=temp.replace("shackleton","")
             temp=temp.replace("chris","")
             temp=temp.replace("germani","")
+            temp=temp.replace("sshacklensf","")
+            temp=temp.replace("cgermannsf","")
             temp=re.sub(pattern,' ',temp)
             
 
