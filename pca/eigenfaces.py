@@ -147,3 +147,22 @@ eigenface_titles = ["eigenface %d" % i for i in range(eigenfaces.shape[0])]
 plot_gallery(eigenfaces, eigenface_titles, h, w)
 
 pl.show()
+
+#pca.explained_variance_
+#pca.explained_variance_ratio_
+def test(n_components):
+    pca = RandomizedPCA(n_components=n_components, whiten=True).fit(X_train)
+    X_train_pca = pca.transform(X_train)
+    X_test_pca = pca.transform(X_test)
+    param_grid = {
+             'C': [1e3, 5e3, 1e4, 5e4, 1e5],
+              'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1],
+              }
+    clf = GridSearchCV(SVC(kernel='rbf', class_weight='auto'), param_grid)
+    clf = clf.fit(X_train_pca, y_train)
+    y_pred = clf.predict(X_test_pca)
+    print classification_report(y_test, y_pred, target_names=target_names)
+    print confusion_matrix(y_test, y_pred, labels=range(n_classes))
+
+for i in [10, 15, 25, 50, 100, 150,250]:
+    test(i)
