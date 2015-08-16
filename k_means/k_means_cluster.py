@@ -135,6 +135,11 @@ print("eso_min",eso_min)
 print("eso_max",eso_max)
 from sklearn.preprocessing import MinMaxScaler
 scaler=MinMaxScaler()
+scaler.fit(finance_features)
+import numpy as np
+x=np.array([[200000.,1000000.]])
+y=scaler.transform(x)
+print(y)
 
 
 
