@@ -44,7 +44,6 @@ for name in names:
 		person[new_feature1]="NaN"
 		person[new_feature2]="NaN"
 
-
 		
 
 key_person1='LAY KENNETH L'
@@ -55,6 +54,63 @@ for name in key_persons:
 	for feature in features:
 		if(person[feature]=="NaN"):
 			print(name,feature)
+
+new_feature3="from_kenneth"
+new_feature4="from_jeffrey"
+new_feature5="to_kenneth"
+new_feature6="to_jeffrey"
+'''
+from_kenneth = open("emails_by_address/from_kenneth.lay@enron.com.txt","r")
+from_jeffrey = open("emails_by_address/from_jeff.skilling@enron.com.txt","r")
+to_kenneth = open("emails_by_address/to_kenneth.lay@enron.com.txt","r")
+to_jeffrey = open("emails_by_address/to_jeff.skilling@enron.com.txt","r")
+
+import re
+split_pattern=re.compile("(,\s*)|(\s+)")
+def parseOutTo(email):
+	email.seek(0)
+	all_text=email.read()
+	begin=all_text.find("To: ")
+	begin+=4
+	all_text=all_text[begin:]
+	end=all_text.find("Subject:")
+	all_text=all_text[:end]
+	all_text=re.sub(split_pattern," ",all_text)
+	to_list=all_text.split()
+	return to_list
+
+def read_email_to_address(email_list):
+	count={}
+	for path in email_list:
+		real_path="../"+path[20:-2]
+		print(real_path)
+		email = open(real_path,"r")
+		temp = parseOutTo(email)
+		for address in temp:
+			if address in count:
+				count[address]+=1
+			else:
+				count[address]=1
+	return count
+
+def add_to_data_dict(feature,dict):
+	for name in names:
+		person=data_dict[name]
+		email=person["email_address"]
+		if(email in dict):
+			person[feature]=dict[email]
+		else:
+			person[feature]="NaN"
+
+temp=read_email_to_address(from_kenneth)
+add_to_data_dict(new_feature3,temp)
+temp=read_email_to_address(from_jeffrey)
+add_to_data_dict(new_feature4,temp)
+temp=read_email_to_address(to_kenneth)
+add_to_data_dict(new_feature5,temp)
+temp=read_email_to_address(to_jeffrey)
+add_to_data_dict(new_feature6,temp)
+'''			
 
 bad_features={}
 for name in names:
@@ -161,6 +217,8 @@ DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=None,
  ('other', 0.0),
  ('poi', 0.0)]
 '''
+feature_list4=feature_list3+[new_feature3,new_feature4,new_feature5,new_feature6]
+
 feature_test=feature_list3 # can be tuned 
 
 name_set=set()
@@ -171,7 +229,6 @@ features_list+=feature_test
 for name in name_set:
 	data_dict.pop(name)
 	myprint("***delete:"+name)
-
 
 
 
@@ -278,4 +335,4 @@ test_classifier(clf, my_dataset, features_list)
 ### Dump your classifier, dataset, and features_list so 
 ### anyone can run/check your results.
 
-#dump_classifier_and_data(clf, my_dataset, features_list)
+dump_classifier_and_data(clf, my_dataset, features_list)
